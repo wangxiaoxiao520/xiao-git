@@ -4,6 +4,8 @@ package cn.news.entity;
 public class NewsCategory {
     private Integer id;
     private String name;
+    private String address;
+    private String title;
 
     public Integer getId() {
         return id;
