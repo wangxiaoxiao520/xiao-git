@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.news.dao.NewsMapper">
+
+    <resultMap id="detailAndCategory" type="NewsDetail">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="author" column="author"/>
+        <result property="createDate" column="createDate"/>
+
+        <association property="newsCategory" javaType="NewsCategory">
+            <result property="id" column="c_id"/>
+            <result property="name" column="c_name"/>
+        </association>
+    </resultMap>
+
+
+    <!--根据分类和标题模糊查询新闻信息-->
+    <select id="queryAllNews" resultMap="detailAndCategory">
+        SELECT d.id,d.`title`,d.`summary`, d.`author`,d.`createDate`,c.`id` c_id,c.`name` c_name
+         FROM `news_category` c,`news_detail` d WHERE c.`id` = d.`categoryId`
+        <if test="categoryId != null and categoryId != 0">
+            and d.`categoryId` = #{categoryId}
+        </if>
+        <if test="title != null and title != ''">
+            and d.`title` like CONCAT ('%', #{title} ,'%')
+        </if>
+        ORDER BY d.id desc
+    </select>
+
+
+    <!--根据新闻编号获取新闻信息-->
+    <select id="queryNewsById" resultType="NewsDetail">
+        select * from news_detail where id =#{id}
+    </select>
+
+    <!--查询所有的新闻分类信息-->
+    <select id="queryAllCategory" resultType="NewsCategory">
+        select * from news_category
+    </select>
+
+    <!--根据新闻标题查询新闻记录数-->
+    <select id="queryCountByTitle"  resultType="int">
+        select count(1) from news_detail where title = #{title}
+    </select>
+
+    <!--更新-->
+    <update id="updateNews" parameterType="NewsDetail">
+        UPDATE `news_detail`
+        SET
+            `categoryId` = #{categoryId},
+            `title` = #{title},
+            `summary` = #{summary},
+            `author` = #{author},
+            `createDate` = #{createDate},
+            `updateDate` = #{updateDate}
+        WHERE `id` = #{id}
+    </update>
+
+</mapper>
