@@ -6,6 +6,7 @@ public class NewsCategory {
     private String name;
     private String address;
     private String title;
+    private String xxx;
 
     public Integer getId() {
         return id;
